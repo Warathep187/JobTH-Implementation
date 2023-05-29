@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      kind: service
+      service: auth-service
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        kind: service
+        service: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: warathep187/auth-service:1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: PORT
+            - name: MONGODB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: MONGODB_URL
+            - name: MESSAGE_BROKER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: MESSAGE_BROKER_URL
+            - name: PROFILE_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: PROFILE_SERVICE_URL
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: SENDER_EMAIL
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: SENDER_EMAIL
+            - name: CLIENT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: CLIENT_URL
+            - name: JWT_EMAIL_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: JWT_EMAIL_VERIFICATION_KEY
+            - name: JWT_AUTHENTICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: JWT_AUTHENTICATION_KEY
+            - name: JWT_RESET_PASSWORD_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: JWT_RESET_PASSWORD_KEY
+            - name: JWT_RESET_PASSWORD_EXPIRES_IN
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: JWT_RESET_PASSWORD_EXPIRES_IN
+            - name: JWT_AUTHENTICATION_EXPIRES_IN
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: JWT_AUTHENTICATION_EXPIRES_IN
+            - name: AUTH_SERVICE_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: AUTH_SERVICE_VERIFICATION_KEY
+            - name: GATEWAY_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-configs
+                  key: GATEWAY_VERIFICATION_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service-service
+spec:
+  selector:
+    app: JobTH
+    kind: service
+    service: auth-service
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer

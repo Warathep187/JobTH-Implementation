@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: message-broker-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      kind: message-broker
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        kind: message-broker
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3-management
+          ports:
+            - containerPort: 5672
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: message-broker-configs
+                  key: RABBITMQ_DEFAULT_USER
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                configMapKeyRef:
+                  name: message-broker-configs
+                  key: RABBITMQ_DEFAULT_PASS
+          volumeMounts:
+            - name: message-broker-volume
+              mountPath: /var/lib/rabbitmq
+      volumes: 
+        - name: message-broker-volume
+          persistentVolumeClaim:
+            claimName: message-broker-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: message-broker-service
+spec:
+  selector:
+    app: JobTH
+    kind: message-broker
+  ports:
+    - port: 5672
+      targetPort: 5672
+  type: ClusterIP

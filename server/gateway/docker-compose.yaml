@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  api-gateway:
+    build: .
+    container_name: api-gateway
+    command: "npm run dev"
+    volumes:
+      - ./:/app
+    ports:
+      - 8080:8080
+    depends_on:
+      - api-gateway-redis
+    networks:
+      - jobthnetwork
+  api-gateway-redis:
+    container_name: api-gateway-redis
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - jobthnetwork
+
+networks:
+  jobthnetwork:
+    external: true

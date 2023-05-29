@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  rabbit:
+    image: rabbitmq:3-management
+    container_name: rabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - jobthnetwork
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbit
+      - RABBITMQ_DEFAULT_PASS=1234
+
+networks:
+  jobthnetwork:
+    external: true

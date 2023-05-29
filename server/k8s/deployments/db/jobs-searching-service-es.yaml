@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jobs-searching-service-elasticsearch
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      kind: db
+      db: elasticsearch
+      service: jobs-searching-service
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        kind: db
+        db: elasticsearch
+        service: jobs-searching-service
+    spec:
+      containers:
+        - name: jobs-searching-service-elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
+          env:
+            - name: discovery.type
+              value: "single-node"
+            - name: xpack.security.enabled
+              value: "false"
+          ports:
+            - containerPort: 9200
+      #     volumeMounts:
+      #       - name: jobs-searching-service-elasticsearch-volume
+      #         mountPath: /usr/share/elasticsearch/data
+      # volumes:
+      #   - name: jobs-searching-service-elasticsearch-volume
+      #     persistentVolumeClaim:
+      #       claimName: jobs-searching-service-elasticsearch-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jobs-searching-service-elasticsearch-service
+spec:
+  selector:
+    app: JobTH
+    kind: db
+    db: elasticsearch
+    service: jobs-searching-service
+  ports:
+    - port: 9200
+      targetPort: 9200
+  type: ClusterIP

@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  applications-service:
+    build: .
+    container_name: applications-service
+    command: "npm run dev"
+    volumes:
+      - ./:/app
+    ports:
+      - 8084:8080
+    networks:
+      - jobthnetwork
+    depends_on:
+      - applications-service-mongo
+  applications-service-mongo:
+    image: mongo
+    ports:
+        - 27020:27017
+    volumes:
+        - ./data/mongo:/data/db
+    networks:
+      - jobthnetwork
+    logging:
+      driver: none
+
+networks:
+  jobthnetwork:
+    external: true

@@ -1,0 +1,31 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.0.1",
+    "@apollo/client": "^3.7.13",
+    "@next/font": "13.3.4",
+    "@reduxjs/toolkit": "^1.9.5",
+    "antd": "^5.4.6",
+    "cookies-next": "^2.1.1",
+    "dayjs": "^1.11.7",
+    "file-saver": "^2.0.5",
+    "graphql": "^16.6.0",
+    "moment": "^2.29.4",
+    "next": "13.3.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-image-file-resizer": "^0.4.8",
+    "react-pdf": "^6.2.2",
+    "react-redux": "^8.0.5",
+    "react-toastify": "^9.1.2",
+    "styled-components": "^5.3.10"
+  }
+}

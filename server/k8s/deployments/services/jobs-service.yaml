@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jobs-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      kind: service
+      service: jobs-service
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        kind: service
+        service: jobs-service
+    spec:
+      containers:
+        - name: jobs-service
+          image: warathep187/jobs-service
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-service-configs
+                  key: PORT
+            - name: MONGODB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-service-configs
+                  key: MONGODB_URL
+            - name: MESSAGE_BROKER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-service-configs
+                  key: MESSAGE_BROKER_URL
+            - name: APPLICATIONS_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-service-configs
+                  key: APPLICATIONS_SERVICE_URL
+            - name: JOBS_SEARCHING_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-service-configs
+                  key: JOBS_SEARCHING_SERVICE_URL
+            - name: CLIENT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-service-configs
+                  key: CLIENT_URL
+            - name: GATEWAY_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-service-configs
+                  key: GATEWAY_VERIFICATION_KEY
+            - name: AUTH_SERVICE_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-service-configs
+                  key: AUTH_SERVICE_VERIFICATION_KEY
+            - name: JOBS_SERVICE_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-service-configs
+                  key: JOBS_SERVICE_VERIFICATION_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jobs-service-service
+spec:
+  selector:
+    app: JobTH
+    kind: service
+    service: jobs-service
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer

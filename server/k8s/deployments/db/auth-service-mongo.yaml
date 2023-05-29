@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service-mongo
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      kind: db
+      db: mongo
+      service: auth-service
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        kind: db
+        db: mongo
+        service: auth-service
+    spec:
+      containers:
+        - name: auth-service-mongo
+          image: mongo
+          ports:
+            - containerPort: 27017
+      #     volumeMounts:
+      #       - name: auth-service-mongo-volume
+      #         mountPath: /data/db
+      # volumes:
+      #   - name: auth-service-mongo-volume
+      #     persistentVolumeClaim:
+      #       claimName: auth-service-mongo-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service-mongo-service
+spec:
+  selector:
+    app: JobTH
+    kind: db
+    db: mongo
+    service: auth-service
+  ports:
+    - port: 27017
+      targetPort: 27017
+  type: ClusterIP

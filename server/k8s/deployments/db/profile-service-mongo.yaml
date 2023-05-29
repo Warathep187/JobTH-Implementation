@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-service-mongo
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      kind: db
+      db: mongo
+      service: profile-service
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        kind: db
+        db: mongo
+        service: profile-service
+    spec:
+      containers:
+        - name: profile-service-mongo
+          image: mongo
+          ports:
+            - containerPort: 27017
+      #     volumeMounts:
+      #       - name: profile-service-mongo-volume
+      #         mountPath: /data/db
+      # volumes:
+      #   - name: profile-service-mongo-volume
+      #     persistentVolumeClaim:
+      #       claimName: profile-service-mongo-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-service-mongo-service
+spec:
+  selector:
+    app: JobTH
+    kind: db
+    db: mongo
+    service: profile-service
+  ports:
+    - port: 27017
+      targetPort: 27017
+  type: ClusterIP

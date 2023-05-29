@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  profile-service:
+    build: .
+    container_name: profile-service
+    command: "npm run dev"
+    volumes:
+      - ./:/app
+    ports:
+      - 8082:8080
+    networks:
+      - jobthnetwork
+    depends_on:
+      - profile-service-mongo
+  profile-service-mongo:
+    image: mongo
+    ports:
+        - 27018:27017
+    volumes:
+        - ./data/mongo:/data/db
+    networks:
+      - jobthnetwork
+    logging:
+      driver: none
+
+networks:
+  jobthnetwork:
+    external: true

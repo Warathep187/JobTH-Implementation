@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: applications-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      kind: service
+      service: applications-service
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        kind: service
+        service: applications-service
+    spec:
+      containers:
+        - name: applications-service
+          image: warathep187/applications-service
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: PORT
+            - name: MONGODB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: MONGODB_URL
+            - name: MESSAGE_BROKER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: MESSAGE_BROKER_URL
+            - name: PROFILE_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: PROFILE_SERVICE_URL
+            - name: JOBS_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: JOBS_SERVICE_URL
+            - name: CLIENT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: CLIENT_URL
+            - name: CLOUDINARY_CLOUD_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: CLOUDINARY_CLOUD_NAME
+            - name: CLOUDINARY_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: CLOUDINARY_API_KEY
+            - name: CLOUDINARY_API_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: CLOUDINARY_API_SECRET
+            - name: GATEWAY_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: GATEWAY_VERIFICATION_KEY
+            - name: AUTH_SERVICE_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: AUTH_SERVICE_VERIFICATION_KEY
+            - name: JOBS_SERVICE_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: applications-service-configs
+                  key: JOBS_SERVICE_VERIFICATION_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: applications-service-service
+spec:
+  selector:
+    app: JobTH
+    kind: service
+    service: applications-service
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer

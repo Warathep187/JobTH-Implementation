@@ -1,0 +1,41 @@
+version: "3.0"
+services:
+  jobs-searching-service:
+    build: .
+    container_name: job-searching-service
+    command: "npm run dev"
+    volumes:
+      - ./:/app
+    ports:
+      - 8085:8080
+    networks:
+      - jobthnetwork
+    restart: always
+    depends_on:
+      - jobs-searching-service-elasticsearch
+  jobs-searching-service-elasticsearch:
+    container_name: jobs-searching-service-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
+    volumes:
+      - ./esdata:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    networks:
+      - jobthnetwork
+    ports:
+      - 9200:9200
+  # jobs-searching-service-kibana:
+  #   image: docker.elastic.co/kibana/kibana:8.7.1
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://jobs-searching-service-elasticsearch:9200
+  #   networks:
+  #     - jobthnetwork
+  #   depends_on:
+  #     - jobs-searching-service-elasticsearch
+  #   ports:
+  #     - 5601:5601
+
+networks:
+  jobthnetwork:
+    external: true

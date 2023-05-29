@@ -1,0 +1,14 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+export const {
+  PORT,
+  REDIS_URL,
+  AUTH_SERVICE_URL,
+  GATEWAY_VERIFICATION_KEY,
+  JWT_AUTHENTICATION_KEY,
+  PROFILE_SERVICE_URL,
+  JOBS_SERVICE_URL,
+  APPLICATIONS_SERVICE_URL,
+  JOBS_SEARCHING_SERVICE_URL,
+} = process.env;

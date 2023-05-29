@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jobs-searching-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      kind: service
+      service: jobs-searching-service
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        kind: service
+        service: jobs-searching-service
+    spec:
+      containers:
+        - name: jobs-searching-service
+          image: warathep187/jobs-searching-service
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-searching-service-configs
+                  key: PORT
+            - name: MESSAGE_BROKER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-searching-service-configs
+                  key: MESSAGE_BROKER_URL
+            - name: ELASTICSEARCH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-searching-service-configs
+                  key: ELASTICSEARCH_URL
+            - name: CLIENT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-searching-service-configs
+                  key: CLIENT_URL
+            - name: GATEWAY_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-searching-service-configs
+                  key: GATEWAY_VERIFICATION_KEY
+            - name: JOBS_SERVICE_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: jobs-searching-service-configs
+                  key: JOBS_SERVICE_VERIFICATION_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jobs-searching-service-service
+spec:
+  selector:
+    app: JobTH
+    kind: service
+    service: jobs-searching-service
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer

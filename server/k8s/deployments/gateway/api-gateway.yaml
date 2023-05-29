@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      kind: api-gateway
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        kind: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: warathep187/api-gateway
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-configs
+                  key: PORT
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-configs
+                  key: REDIS_URL
+            - name: AUTH_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-configs
+                  key: AUTH_SERVICE_URL
+            - name: PROFILE_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-configs
+                  key: PROFILE_SERVICE_URL
+            - name: JOBS_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-configs
+                  key: JOBS_SERVICE_URL
+            - name: APPLICATIONS_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-configs
+                  key: APPLICATIONS_SERVICE_URL
+            - name: JOBS_SEARCHING_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-configs
+                  key: JOBS_SEARCHING_SERVICE_URL
+            - name: GATEWAY_VERIFICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-configs
+                  key: GATEWAY_VERIFICATION_KEY
+            - name: JWT_AUTHENTICATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-configs
+                  key: JWT_AUTHENTICATION_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+spec:
+  selector:
+    app: JobTH
+    kind: api-gateway
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer

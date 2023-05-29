@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  jobs-service:
+    build: .
+    container_name: jobs-service
+    command: "npm run dev"
+    volumes:
+      - ./:/app
+    ports:
+      - 8083:8080
+    networks:
+      - jobthnetwork
+    depends_on:
+      - jobs-service-mongo
+  jobs-service-mongo:
+    image: mongo
+    ports:
+        - 27019:27017
+    volumes:
+        - ./data/mongo:/data/db
+    networks:
+      - jobthnetwork
+    logging:
+      driver: none
+
+networks:
+  jobthnetwork:
+    external: true

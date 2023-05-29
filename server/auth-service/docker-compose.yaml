@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  auth-service:
+    build: .
+    container_name: auth-service
+    command: "npm run dev"
+    volumes:
+      - ./:/app
+    ports:
+      - 8081:8080
+    networks:
+      - jobthnetwork
+    depends_on:
+      - auth-service-mongo
+  auth-service-mongo:
+    image: mongo
+    ports:
+        - 27017:27017
+    volumes:
+        - ./data/mongo:/data/db
+    networks:
+      - jobthnetwork
+    logging:
+      driver: none
+
+networks:
+  jobthnetwork:
+    external: true
